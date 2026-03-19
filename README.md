@@ -7,7 +7,6 @@ Crawl websites and GitHub trees to generate knowledge files for RAG
 </p>
 <div align="center">
 
-[CI](https://github.com/beautyfree/ohmycrawler/actions)
 [![NPM Version](https://badgen.net/npm/v/ohmycrawler)](https://www.npmjs.com/package/ohmycrawler)
 [![License](https://img.shields.io/npm/l/ohmycrawler)](https://github.com/beautyfree/ohmycrawler/blob/main/LICENSE)
 
