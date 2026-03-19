@@ -1,6 +1,6 @@
 {
   "name": "ohmycrawler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "beautyfree",
   "description": "Crawl a website to generate knowledge file for RAG",
   "main": "dist/index.js",

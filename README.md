@@ -1,13 +1,17 @@
-# ohmycrawler
+<p align="center">
+  <img width="20%" src=".github/assets/logo.png" alt="ohmycrawler" />
+  <h1 align="center">ohmycrawler</h1>
+</p>
+<p align="center">
+Crawl websites and GitHub trees to generate knowledge files for RAG
+</p>
+<div align="center">
 
-*Crawl websites and GitHub trees to generate knowledge files for RAG*
+[CI](https://github.com/beautyfree/ohmycrawler/actions)
+[![NPM Version](https://badgen.net/npm/v/ohmycrawler)](https://www.npmjs.com/package/ohmycrawler)
+[![License](https://img.shields.io/npm/l/ohmycrawler)](https://github.com/beautyfree/ohmycrawler/blob/main/LICENSE)
 
-[![CI](https://github.com/beautyfree/ohmycrawler/actions/workflows/ci.yaml/badge.svg?style=flat-square)](https://github.com/beautyfree/ohmycrawler/actions)
-[![npm version](https://img.shields.io/npm/v/ohmycrawler?style=flat-square)](https://www.npmjs.com/package/ohmycrawler)
-[![Node.js](https://img.shields.io/badge/Node.js->=18-339933?style=flat-square&logo=node.js)](https://nodejs.org)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
-
-[Features](#features) • [Installation](#installation) • [Usage](#usage) • [CAPTCHA flow](#captcha-flow) • [API](#api)
+</div>
 
 A CLI and library that crawls a site from a start URL, converts pages to Markdown, and outputs either a single JSON array or one file per page. Supports GitHub tree URLs (Markdown via API), HTTP crawling with CAPTCHA handoff, and presets for repeatable crawl configs.
 
@@ -56,14 +60,16 @@ Output format:
 
 ### Options
 
-| Option | Description |
-|--------|-------------|
-| `--preset <name>` | Use a preset (default: `auto`). |
-| `-c, --max-connections <n>` | Max concurrent connections. |
-| `-e, --exclude <paths>` | Comma-separated paths to exclude. |
-| `--extract <selector>` | CSS selector to extract (default: full body). |
-| `--no-log` | Disable progress logging. |
-| `--no-solve-captcha` | Disable opening browser to solve CAPTCHA in HTTP mode. |
+
+| Option                      | Description                                            |
+| --------------------------- | ------------------------------------------------------ |
+| `--preset <name>`           | Use a preset (default: `auto`).                        |
+| `-c, --max-connections <n>` | Max concurrent connections.                            |
+| `-e, --exclude <paths>`     | Comma-separated paths to exclude.                      |
+| `--extract <selector>`      | CSS selector to extract (default: full body).          |
+| `--no-log`                  | Disable progress logging.                              |
+| `--no-solve-captcha`        | Disable opening browser to solve CAPTCHA in HTTP mode. |
+
 
 ### GitHub tree
 
