@@ -64,6 +64,7 @@ Output format:
 | --------------------------- | ------------------------------------------------------ |
 | `--preset <name>`           | Use a preset (default: `auto`).                        |
 | `-c, --max-connections <n>` | Max concurrent connections.                            |
+| `--request-delay <ms>`     | Delay (in ms) between crawling batches (best with `maxConnections=1`). |
 | `-e, --exclude <paths>`     | Comma-separated paths to exclude.                      |
 | `--extract <selector>`      | CSS selector to extract (default: full body).          |
 | `--no-log`                  | Disable progress logging.                              |
@@ -142,4 +143,4 @@ for await (const page of crawlWebsite('https://example.com/', { onCaptcha: solve
 }
 ```
 
-`crawlWebsite(startUrl, options?)` yields `{ path: string, text: string }`. Options include `useBrowser`, `onCaptcha`, `extract`, `exclude`, `maxConnections`, `fetchOptions`, and others (see `CrawlOptions` in the package types).
+`crawlWebsite(startUrl, options?)` yields `{ path: string, text: string }`. Options include `useBrowser`, `onCaptcha`, `extract`, `exclude`, `maxConnections`, `requestDelayMs`, `fetchOptions`, and others (see `CrawlOptions` in the package types).

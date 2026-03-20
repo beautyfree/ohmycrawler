@@ -2,11 +2,15 @@ import { PlaywrightCrawler } from "crawlee";
 import TurndownService from "turndown";
 import { URL } from "node:url";
 
-import { isCaptchaContent, isErrorPage } from "./captcha.js";
+import { isCaptchaContent } from "./captcha.js";
 import { normalizeStartUrl } from "./url.js";
 import { shouldExcludeLink } from "./link.js";
 import { mergeCrawlOptions } from "./options.js";
 import type { CrawlOptions, Page } from "./types.js";
+
+function sleep(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
 
 const turndownService = new TurndownService();
 turndownService.remove("script");
@@ -41,6 +45,15 @@ export async function* crawlWebsitePlaywright(
         log.info(`Crawled ${url}`);
       }
 
+      // Best-effort throttling.
+      // Note: PlaywrightCrawler fetches the page before requestHandler runs,
+      // so this delay affects throughput (slot usage), not the exact start time
+      // of the underlying navigation. Exact spacing is only guaranteed when
+      // `maxConcurrency=1`.
+      if (options.requestDelayMs > 0) {
+        await sleep(options.requestDelayMs);
+      }
+
       let html: string;
       if (options.extract) {
         const el = await page.$(options.extract);
@@ -53,10 +66,7 @@ export async function* crawlWebsitePlaywright(
         return;
       }
       const text = turndownService.turndown(html ?? "");
-      if (isErrorPage(text) || isErrorPage(html ?? "")) {
-        if (options.logEnabled) log.info(`Error page skipped: ${url}`);
-        return;
-      }
+      // Intentionally do not apply content-based error-page heuristics here.
       if (text.trim() !== "") {
         results.push({ path: url, text });
       }

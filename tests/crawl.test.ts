@@ -12,12 +12,18 @@ describe("crawlWebsite", () => {
     const base = "https://example.com/";
     const fetchFn: FetchFn = async (url) => {
       if (url === base || url === base + "index.html") {
-        return `<html><body><a href="${base}">home</a><a href="${base}page">page</a></body></html>`;
+        return {
+          text: `<html><body><a href="${base}">home</a><a href="${base}page">page</a></body></html>`,
+          status: 200,
+        };
       }
       if (url === base + "page" || url === base + "page/") {
-        return `<html><body><a href="${base}">back</a></body></html>`;
+        return {
+          text: `<html><body><a href="${base}">back</a></body></html>`,
+          status: 200,
+        };
       }
-      return "";
+      return { text: "", status: 200 };
     };
     const getGHTreePaths: GetGHTreePathsFn = async () => [];
     const options: Partial<CrawlOptions> = {
@@ -40,9 +46,9 @@ describe("crawlWebsite", () => {
     const base = "https://site.com/";
     const fetchFn: FetchFn = async (url) => {
       if (url.startsWith(base) && (url === base || url === base + "a" || url === base + "b")) {
-        return "<html><body><p>content</p></body></html>";
+        return { text: "<html><body><p>content</p></body></html>", status: 200 };
       }
-      return "";
+      return { text: "", status: 200 };
     };
     const pages: Page[] = [];
     for await (const p of crawlWebsite(base, { logEnabled: false }, fetchFn)) {

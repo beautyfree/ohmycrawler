@@ -10,15 +10,3 @@ export function isCaptchaContent(htmlOrText: string): boolean {
     s.includes("smart-captcha")
   );
 }
-
-/**
- * Heuristic: treat response as an error page (404, etc.) so we don't yield it.
- */
-export function isErrorPage(htmlOrText: string): boolean {
-  const s = htmlOrText.slice(0, 8000);
-  return (
-    (s.includes("404") && (s.includes("Page doesn't exist") || s.includes("not found"))) ||
-    /<title[^>]*>\s*404\s/i.test(s) ||
-    /\b404\s+Error\b/i.test(s)
-  );
-}

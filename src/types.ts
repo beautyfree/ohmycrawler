@@ -8,6 +8,11 @@ export interface CrawlOptions {
   extract?: string;
   /** Maximum number of concurrent connections allowed */
   maxConnections: number;
+  /**
+   * Delay (in ms) between crawling batches.
+   * In HTTP mode this becomes effectively "between requests" when `maxConnections=1`.
+   */
+  requestDelayMs: number;
   /** Path names to exclude */
   exclude: string[];
   /** Whether to stop on first error */
@@ -31,8 +36,20 @@ export interface Page {
   text: string;
 }
 
-/** Fetch function: (url, init) => Promise<response body text> */
-export type FetchFn = (url: string, init?: RequestInit) => Promise<string>;
+export interface FetchResult {
+  text: string;
+  /**
+   * HTTP status code returned by the fetcher.
+   * When using custom fetchers, this can be omitted.
+   */
+  status?: number;
+}
+
+/** Fetch function: (url, init) => Promise<{ text, status? }> */
+export type FetchFn = (
+  url: string,
+  init?: RequestInit,
+) => Promise<FetchResult>;
 
 /** GitHub tree fetcher: (baseUrl, exclude) => Promise<full URLs of .md files> */
 export type GetGHTreePathsFn = (

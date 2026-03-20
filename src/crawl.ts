@@ -12,7 +12,11 @@ import type { CrawlOptions, Page, FetchFn, GetGHTreePathsFn } from "./types.js";
 const turndownService = new TurndownService();
 turndownService.remove("script");
 
-import { isCaptchaContent, isErrorPage } from "./captcha.js";
+import { isCaptchaContent } from "./captcha.js";
+
+function sleep(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
 
 export type { CrawlOptions, Page, FetchFn, GetGHTreePathsFn };
 
@@ -61,6 +65,10 @@ export async function* crawlWebsite(
       }
     }
     index += batch.length;
+    if (options.requestDelayMs > 0 && index < queue.length) {
+      // Throttle between batches to reduce pressure on the target server.
+      await sleep(options.requestDelayMs);
+    }
   }
   if (options.logEnabled) {
     console.log("✨ Crawl completed");
@@ -87,8 +95,11 @@ async function crawlPage(
   });
 
   let html = "";
+  let status: number | undefined;
   try {
-    html = await fetchFn(location, mergedFetchOptions());
+    const res = await fetchFn(location, mergedFetchOptions());
+    html = res.text;
+    status = res.status;
   } catch (err) {
     if (options.breakOnError) throw err;
     if (options.logEnabled) console.error(err);
@@ -110,7 +121,9 @@ async function crawlPage(
         headers: { ...existingHeaders, ...newHeaders },
       });
       try {
-        html = await fetchFn(location, mergedFetchOptions());
+        const res = await fetchFn(location, mergedFetchOptions());
+        html = res.text;
+        status = res.status;
       } catch (err) {
         if (options.breakOnError) throw err;
         if (options.logEnabled) console.error(err);
@@ -146,7 +159,8 @@ async function crawlPage(
     if (extracted != null) text = extracted;
   }
   text = turndownService.turndown(text ?? "");
-  if (isErrorPage(text) || isErrorPage(html)) {
+  // Skip only when we explicitly know it's a 404 from HTTP status.
+  if (status === 404) {
     if (options.logEnabled) console.warn(`⚠️ Error page skipped: ${location}${fromMsg}`);
     return { path, text: "", links: [] };
   }

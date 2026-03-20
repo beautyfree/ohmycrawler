@@ -4,6 +4,7 @@ export type { CrawlOptions };
 
 const DEFAULTS: CrawlOptions = {
   maxConnections: 1,
+  requestDelayMs: 0,
   exclude: [],
   breakOnError: true,
   logEnabled: true,

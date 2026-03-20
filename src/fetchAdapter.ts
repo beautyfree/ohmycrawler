@@ -16,6 +16,9 @@ const DEFAULT_INIT: RequestInit = {
 export function defaultFetchAdapter(): FetchFn {
   return async (url: string, overrides?: RequestInit) => {
     const res = await fetch(url, { ...DEFAULT_INIT, ...overrides });
-    return res.text();
+    return {
+      text: await res.text(),
+      status: res.status,
+    };
   };
 }

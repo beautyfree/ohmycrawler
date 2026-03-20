@@ -23,6 +23,7 @@ export interface Preset {
     exclude?: string[];
     extract?: string;
     maxConnections?: number;
+    requestDelayMs?: number;
     headers?: Record<string, string>;
   };
 }

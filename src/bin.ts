@@ -11,8 +11,15 @@ import PRESET_LIST, { Preset } from "./preset.js";
 import { solveCaptchaInBrowser } from "./solveCaptcha.js";
 
 async function main() {
-  const { preset, maxConnections, exclude = [], extract, log, solveCaptcha } =
-    program.opts();
+  const {
+    preset,
+    maxConnections,
+    exclude = [],
+    extract,
+    log,
+    solveCaptcha,
+    requestDelay,
+  } = program.opts();
   const [startUrl, outPath] = program.args;
   const fetchOptions: RequestInit = {
     headers: {
@@ -28,6 +35,7 @@ async function main() {
     maxConnections,
     exclude,
     extract,
+    requestDelayMs: requestDelay,
     logEnabled: !!log,
     fetchOptions,
     onCaptcha: solveCaptcha ? solveCaptchaInBrowser : undefined,
@@ -45,7 +53,9 @@ async function main() {
         options.maxConnections
       } exclude='${options.exclude.join(",")}' extract='${
         options.extract || ""
-      }'${options.useBrowser ? " browser=Playwright" : ""}${options.onCaptcha ? " solve-captcha=on" : ""}`,
+      }' delayMs=${options.requestDelayMs ?? 0}${
+        options.useBrowser ? " browser=Playwright" : ""
+      }${options.onCaptcha ? " solve-captcha=on" : ""}`,
     );
   }
   const pages: Page[] = [];
@@ -87,6 +97,12 @@ function applyPreset(
   if (presetOptions) {
     if (presetOptions.maxConnections && !options.maxConnections) {
       options.maxConnections = presetOptions.maxConnections;
+    }
+    if (
+      presetOptions.requestDelayMs !== undefined &&
+      options.requestDelayMs === undefined
+    ) {
+      options.requestDelayMs = presetOptions.requestDelayMs;
     }
     if (presetOptions.exclude?.length && !options.exclude?.length) {
       options.exclude = presetOptions.exclude;
@@ -148,6 +164,11 @@ Examples:
   .option(
     "-c, --max-connections <int>",
     "Maximum concurrent connections when crawling the pages",
+    parseInt,
+  )
+  .option(
+    "--request-delay <ms>",
+    "Delay (in ms) between crawling batches (best with maxConnections=1)",
     parseInt,
   )
   .option(
